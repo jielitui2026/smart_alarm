@@ -1,0 +1,63 @@
+<!-- ============================================================ -->
+<!-- 文件名: android/app/src/main/res/layout/activity_alarm.xml   -->
+<!-- 说明: 闹钟提醒界面布局                                       -->
+<!-- ============================================================ -->
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#FF0000"
+    android:padding="24dp">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@android:drawable/ic_lock_idle_alarm"
+        android:layout_marginBottom="32dp" />
+
+    <TextView
+        android:id="@+id/tv_alarm_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="闹钟提醒"
+        android:textSize="28sp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:id="@+id/tv_alarm_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="该起床啦！"
+        android:textSize="18sp"
+        android:textColor="#E0E0E0"
+        android:layout_marginBottom="48dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_snooze"
+            android:layout_width="120dp"
+            android:layout_height="56dp"
+            android:text="贪睡 5分钟"
+            android:textSize="16sp"
+            android:backgroundTint="#FFA500"
+            android:layout_marginEnd="16dp" />
+
+        <Button
+            android:id="@+id/btn_stop_alarm"
+            android:layout_width="120dp"
+            android:layout_height="56dp"
+            android:text="停止闹钟"
+            android:textSize="16sp"
+            android:backgroundTint="#4CAF50" />
+
+    </LinearLayout>
+
+</LinearLayout>
