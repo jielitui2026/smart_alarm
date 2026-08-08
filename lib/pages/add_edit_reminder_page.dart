@@ -1,7 +1,3 @@
-// ============================================================
-// 文件名: lib/pages/add_edit_reminder_page.dart
-// 说明: 添加/编辑提醒页面
-// ============================================================
 import 'package:flutter/material.dart';
 import 'package:smart_alarm/models/reminder.dart';
 import 'package:smart_alarm/utils/constants.dart';
@@ -45,9 +41,7 @@ class _AddEditReminderPageState extends State<AddEditReminderPage> {
       _selectedRepeatCount = r.repeatCount;
       _vibrate = r.vibrate;
     } else {
-      // 默认设置为当前时间+5分钟
       _selectedTime = DateTime.now().add(const Duration(minutes: 5));
-      // 对齐到整分钟
       _selectedTime = DateTime(
         _selectedTime.year,
         _selectedTime.month,
@@ -69,16 +63,6 @@ class _AddEditReminderPageState extends State<AddEditReminderPage> {
     final picked = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(_selectedTime),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: Theme.of(context).primaryColor,
-            ),
-          ),
-          child: child!,
-        );
-      },
     );
     if (picked != null) {
       setState(() {
@@ -89,7 +73,6 @@ class _AddEditReminderPageState extends State<AddEditReminderPage> {
           picked.hour,
           picked.minute,
         );
-        // 如果选中的时间在过去，则设置为明天
         if (_selectedTime.isBefore(DateTime.now())) {
           _selectedTime = _selectedTime.add(const Duration(days: 1));
         }
@@ -103,16 +86,6 @@ class _AddEditReminderPageState extends State<AddEditReminderPage> {
       initialDate: _selectedTime,
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: Theme.of(context).primaryColor,
-            ),
-          ),
-          child: child!,
-        );
-      },
     );
     if (picked != null) {
       setState(() {
@@ -159,7 +132,6 @@ class _AddEditReminderPageState extends State<AddEditReminderPage> {
   void _save() {
     if (!_formKey.currentState!.validate()) return;
 
-    // 检查时间是否有效
     if (_selectedTime.isBefore(DateTime.now())) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -200,7 +172,6 @@ class _AddEditReminderPageState extends State<AddEditReminderPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 标题
               TextFormField(
                 controller: _titleController,
                 decoration: const InputDecoration(
@@ -221,8 +192,6 @@ class _AddEditReminderPageState extends State<AddEditReminderPage> {
                 maxLength: 50,
               ),
               const SizedBox(height: 16),
-
-              // 内容
               TextFormField(
                 controller: _contentController,
                 decoration: const InputDecoration(
@@ -241,10 +210,157 @@ class _AddEditReminderPageState extends State<AddEditReminderPage> {
                 },
               ),
               const SizedBox(height: 20),
-
-              // 日期和时间选择
               Card(
                 elevation: 2,
                 child: Padding(
                   padding: const EdgeInsets.all(16),
-                  child
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.calendar_today),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              DateFormat('yyyy年MM月dd日').format(_selectedTime),
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: _selectDate,
+                            child: const Text('选择日期'),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          const Icon(Icons.access_time),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              DateFormat('HH:mm').format(_selectedTime),
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: _selectTime,
+                            child: const Text('选择时间'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Card(
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.music_note),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              _selectedSoundPath != null
+                                  ? '已选择音效'
+                                  : '使用系统默认音效',
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: _selectSound,
+                            child: const Text('选择音效'),
+                          ),
+                        ],
+                      ),
+                      const Divider(),
+                      Row(
+                        children: [
+                          const Icon(Icons.timer),
+                          const SizedBox(width: 12),
+                          const Text('提醒时长：'),
+                          const SizedBox(width: 8),
+                          DropdownButton<int>(
+                            value: _selectedDuration,
+                            items: AppConstants.DURATION_OPTIONS.map((value) {
+                              return DropdownMenuItem<int>(
+                                value: value,
+                                child: Text('$value 秒'),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              if (value != null) {
+                                setState(() => _selectedDuration = value);
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const Icon(Icons.repeat),
+                          const SizedBox(width: 12),
+                          const Text('重复次数：'),
+                          const SizedBox(width: 8),
+                          DropdownButton<int>(
+                            value: _selectedRepeatCount,
+                            items: AppConstants.REPEAT_OPTIONS.map((value) {
+                              return DropdownMenuItem<int>(
+                                value: value,
+                                child: Text('$value 次'),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              if (value != null) {
+                                setState(() => _selectedRepeatCount = value);
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const Icon(Icons.vibration),
+                          const SizedBox(width: 12),
+                          const Text('震动提醒'),
+                          const Spacer(),
+                          Switch(
+                            value: _vibrate,
+                            onChanged: (value) {
+                              setState(() => _vibrate = value);
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _save,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: Text(
+                    isEditing ? '更新提醒' : '添加提醒',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
